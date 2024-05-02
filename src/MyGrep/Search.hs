@@ -10,6 +10,11 @@ import           Data.Text.Internal.Search
 import           Data.Maybe (fromMaybe)
 import           Control.Exception
 import           System.FilePath
+import           Control.Concurrent
+
+
+addInMVar :: MVar () -> IO ()
+addInMVar mVar1 = putMVar mVar1 ()
 
 search :: Args -> IO ()
 search Args{..} = do
@@ -22,13 +27,15 @@ search Args{..} = do
       searchInDirectory searchLocation' = do
         files_ <- listDirectory searchLocation'
         let files = filter (\x -> head x /= '.') files_   -- filtering out hidden directories
-        mapM_ go files
+        isSearchCompleteVar <- newEmptyMVar
+        mapM_ (\file -> forkIO $ go isSearchCompleteVar file) files
+        mapM_ (\_ -> takeMVar isSearchCompleteVar) files -- wait for all threads to finish
         where 
-          go :: FilePath -> IO ()
-          go fp = do
+          go :: MVar () -> FilePath -> IO ()
+          go mVar1 fp = do
             let fullPath = searchLocation' </> fp
-            doesDirectoryExist fullPath >>= (\isDir -> if isDir then searchInDirectory fullPath 
-              else searchInFile fullPath)
+            doesDirectoryExist fullPath >>= (\isDir -> if isDir then searchInDirectory fullPath >> addInMVar mVar1
+              else searchInFile fullPath >> addInMVar mVar1)
 
       searchInFile :: FilePath -> IO ()
       searchInFile fileName = do
