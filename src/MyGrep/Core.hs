@@ -32,7 +32,6 @@ mkArgs args = case splitFlagsTerms of
       _    -> Recursive
       )
 
-    
     go searchTerm searchLocation flags = do
       isDirectory <- doesDirectoryExist searchLocation
       isFile <- doesFileExist searchLocation
@@ -41,15 +40,7 @@ mkArgs args = case splitFlagsTerms of
           else pure $ Left (ErrorMessage $ "Search Location not valid: " <> T.pack searchLocation)
 
 parseArguments :: IO (Either ErrorMessage Args)
-parseArguments = do
-  args <- getArguments
-  case args of
-    Left e -> pure $ Left e
-    Right r -> do
-      arg <- mkArgs r
-      case arg of
-        Left e -> pure $ Left e
-        Right res -> pure $ Right res
+parseArguments = getArguments >>= either (return.Left) mkArgs
 
 main' :: IO ()
 main' = do

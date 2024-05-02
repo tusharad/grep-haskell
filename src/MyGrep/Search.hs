@@ -17,11 +17,12 @@ search Args{..} = do
         File      -> searchInFile $ fromMaybe "" searchLocation
         Directory -> searchInDirectory $ fromMaybe "" searchLocation
         STDIN     -> searchString 0 "" . T.lines <$> T.getContents
-        -- _         -> pure [] -- impossible case
+        _         -> pure [] -- impossible case
   where
       searchInDirectory :: FilePath -> IO [ResultLine]
       searchInDirectory searchLocation' = do
-        files <- listDirectory searchLocation'
+        files_ <- listDirectory searchLocation'
+        let files = filter (\x -> head x /= '.') files_   -- filtering out hidden directories
         mconcat $ map (\file -> do
           res <- doesDirectoryExist (searchLocation' </> file)
           (if res then searchInDirectory (searchLocation' </> file) else searchInFile (searchLocation' </> file))
