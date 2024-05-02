@@ -18,4 +18,4 @@ fancyPrint rLine = T.putStrLn $ fileName <> "\t:: " <> lineNumber' <> "\t" <> li
         line' = renderChunkText With8Colours $ fore brightYellow $ chunk $ getL rLine
         fName = fromMaybe "" (file rLine)
         lName = maybe "" show (lineNumber rLine)
-        getL rLine_@ResultLine{line=ll} = ll
+        getL ResultLine{line=ll} = ll

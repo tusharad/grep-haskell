@@ -5,7 +5,6 @@
 module MyGrep.Core where
 
 import           MyGrep.Common.Types
-import           MyGrep.Common.Utils
 import           MyGrep.Search
 import qualified System.Environment as Env
 import qualified Data.Text as T
@@ -47,6 +46,4 @@ main' = do
   eArg <- parseArguments
   case eArg of
     Left err -> T.putStrLn $ "Error: " <> getError err
-    Right arg -> do
-      res <- search arg
-      mapM_ fancyPrint res
+    Right arg -> search arg
