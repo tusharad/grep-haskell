@@ -57,10 +57,6 @@ Search for the word "Hello Haskell" in all files in the directory "./haskell" an
 
 Contributions to `grep-haskell` are welcome! Whether it's bug reports, feature requests, or pull requests, all forms of contributions help make `grep-haskell` better. Please follow the standard GitHub fork & pull request workflow.
 
-## License
-
-`grep-haskell` is released under the MIT License. See the LICENSE file for more details.
-
 ---
 
 This README is just a starting point. As `grep-haskell` grows and evolves, be sure to update documentation to reflect new features and changes.
